@@ -7,12 +7,12 @@
       "database": "95Q7ZLz3Gj"
     },
     "title" : "SRITEST.com",
-    "url": "http://localhost",
-    "images_url" : "http://localhost:7777",
+    "url": "https://aiauditor.herokuapp.com/",
+    "images_url" : "https://aiauditor.herokuapp.com/",
     "port": "7777",
-    "path" : "/Works/SRIKANTH/PROJECT/",
+    "path" : "/app/",
     "websitename": "SRIKANTHTEST",
-    "cron_ref_url" : "http://localhost",
+    "cron_ref_url" : "https://aiauditor.herokuapp.com/",
     "fileversion": "0.0.1",
     "settingscdn":{
       "s3_enable": 0
