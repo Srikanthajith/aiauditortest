@@ -34,3 +34,5 @@ mysqliq['clear_sheets'] = 'TRUNCATE sheets';
 mysqliq['clear_expenses'] = 'TRUNCATE expenses';
 mysqliq['clear_expenses_details'] = 'TRUNCATE expenses_details';
 
+mysqliq['get_distinct_transactions_credits'] = 'SELECT DISTINCT transaction,SUM(total_credits) as total_credits FROM expenses where sheet_id = ?  group by transaction';
+mysqliq['get_distinct_transactions_debits'] = 'SELECT DISTINCT transaction,SUM(total_debits) as total_debits FROM expenses where sheet_id = ? group by transaction';

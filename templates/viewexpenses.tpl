@@ -15,9 +15,18 @@
    <meta http-equiv="Cache-control" content="public, max-age=86400, must-revalidate" />
    <title>{$config.title} | {$seoIM}</title>
     <link rel="stylesheet" defer href="{$config[externalIMcss]}bootstrap.css">
+    <link rel="stylesheet" defer href=" https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.css">
     <script src="{$config[externalIMjs]}jquery-3.3.1.min.js"></script>
 </head>
+<div class="row">
+    <div class="col-md-6">
+        <canvas id="myChartCredits" width="400" height="400"></canvas>
+    </div>
 
+    <div class="col-md-6">
+        <canvas id="myChartDebits" width="400" height="400"></canvas>
+    </div>
+</div>
 <div class="col-lg-12">
 <div class="panel panel-default">
 <div class="panel-heading"><h3>Expenses Sheet</h3></div>
@@ -82,8 +91,116 @@
 
       <script src="{$config[externalIMjs]}jqueryNotify.js"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"></script>
+      
 <script type="text/javascript">
-   
+   var cred = document.getElementById('myChartCredits').getContext('2d');
+   var debts = document.getElementById('myChartDebits').getContext('2d');
+   var creditlabels = '{$creditlabelschart}';
+   var creditschart = '{$creditschart}';
+    datacred = {
+        datasets: [{
+            data: creditschart.split(','),
+            backgroundColor: [
+						"red",
+						"black",
+						"purple",
+						"yellow",
+                        "green",
+                        "blue",
+                        "orange",
+                        "gold",
+                        "pink"
+					],
+					label: 'My dataset' // for legend
+				
+        }],
+
+        // These labels appear in the legend and in the tooltips when hovering different arcs
+        labels: creditlabels.split(',')
+    };
+
+    optionscred = {
+				responsive: true,
+				legend: {
+					position: 'right',
+				},
+				title: {
+					display: true,
+					text: 'Credits Types'
+				},
+				scale: {
+					ticks: {
+						beginAtZero: true
+					},
+					reverse: false
+				},
+				animation: {
+					animateRotate: false,
+					animateScale: true
+				}
+			}
+
+    var debitlabels = '{$debitlabelschart}';
+   var debitchart = '{$debitschart}';
+    datadebt = {
+        datasets: [{
+            data: debitchart.split(','),
+            backgroundColor: [
+						"red",
+						"black",
+						"purple",
+						"yellow",
+                        "green",
+                        "blue",
+                        "orange",
+                        "gold",
+                        "pink"
+					],
+					label: 'My dataset' // for legend
+				
+        }],
+
+        // These labels appear in the legend and in the tooltips when hovering different arcs
+        labels: debitlabels.split(',')
+    };
+
+    optionsdebt = {
+				responsive: true,
+				legend: {
+					position: 'right',
+				},
+				title: {
+					display: true,
+					text: 'Debit Types'
+				},
+				scale: {
+					ticks: {
+						beginAtZero: true
+					},
+					reverse: false
+				},
+				animation: {
+					animateRotate: false,
+					animateScale: true
+				}
+			}
+
+
+
+
+new Chart(cred, {
+    data: datacred,
+    type: 'polarArea',
+    options: optionscred
+});
+
+new Chart(debts, {
+    data: datadebt,
+    type: 'polarArea',
+    options: optionsdebt
+});
+
 </script>
 </body>
 </html>

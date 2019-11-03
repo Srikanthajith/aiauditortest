@@ -536,6 +536,20 @@ class commonModule  {
         return await global.mysql.query(strQuery, escape_data)
     }
 
+    async getall_creditschart (id) {
+        let mysql = {};
+		let escape_data = [id];
+		let strQuery = await mysqclass.mysqli(mysql, 'get_distinct_transactions_credits');
+        return await global.mysql.query(strQuery, escape_data)
+    }
+
+    async getall_debitschart (id) {
+        let mysql = {};
+		let escape_data = [id];
+		let strQuery = await mysqclass.mysqli(mysql, 'get_distinct_transactions_debits');
+        return await global.mysql.query(strQuery, escape_data)
+    }
+
     async getall_insideexpensesmain (id) {
         let mysql = {};
 		let escape_data = [id];

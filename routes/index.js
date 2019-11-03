@@ -39,11 +39,27 @@ app.get(['/'], async (req, res) => {
 app.get(['/viewexpense/:action'], async (req, res) => {
 	var extend = require('util')._extend;
 	var arr_temp = extend({}, $arr);
-	let [outerrecords, innerrecords] = await Promise.all([common.getall_expensesmain(req.params.action), common.getall_insideexpensesmain(req.params.action)]);
+	let [outerrecords, innerrecords, credits, debits] = await Promise.all([common.getall_expensesmain(req.params.action), common.getall_insideexpensesmain(req.params.action), common.getall_creditschart(req.params.action), common.getall_debitschart(req.params.action)]);
 	for (const item of outerrecords) {
 		let arraytopushinside = _.filter(innerrecords, function (o) { return o.expense_id == item.id; })
 		item.internalexpenses = arraytopushinside
 	}
+	let creditschart = [];
+	let creditlabelschart = [];
+	let debitlabelschart = [];
+	let debitschart = []
+	for (const insideitem of credits) {
+		creditlabelschart.push(insideitem.transaction)
+		creditschart.push(insideitem.total_credits)
+	}
+	for (const insideitem of debits) {
+		debitlabelschart.push(insideitem.transaction)
+		debitschart.push(insideitem.total_debits)
+	}
+	arr_temp.creditlabelschart = creditlabelschart;
+	arr_temp.debitlabelschart = debitlabelschart;
+	arr_temp.creditschart = creditschart;
+	arr_temp.debitschart = debitschart;
 	arr_temp.completerecords = outerrecords;
 	common.tplFile("viewexpenses.tpl");
 	common.headerSet(1);
