@@ -73,6 +73,8 @@ app.post(['/importXLSXfile'], multer.multerSingleUpload('excel_file'), async (re
 		// finalresult.datumnew = req.file;
 		let sheet_id = insertSheet.insertId;
 		var inputFile = global.path + 'public/uploads/excelfiles/' + req.file.filename;
+        finalresult.status = 'success';
+        res.json(finalresult);
 		asyncnpm.waterfall([
 			function (callback) {
 				var headers = {};
@@ -137,7 +139,8 @@ app.post(['/importXLSXfile'], multer.multerSingleUpload('excel_file'), async (re
 				callback(null, 1)
 			}
 		], function (err, forlength) {
-			common.jsonResponse(res, 'success', '');
+			res.end();
+			return false;
 		});
 	}
 });
