@@ -456,22 +456,34 @@ class commonModule  {
         }
     }
 
+    async insert_mainsheet (file) {
+        let mysql = {};
+		let escape_data = [file.originalname, file.filename, dateFormat(new Date(), "yyyy-mm-dd HH:MM:ss")];
+		let strQuery = await mysqclass.mysqli(mysql, 'insert_into_sheets');
+        return await global.mysql.query(strQuery, escape_data)
+    }
+
     async insert_dataexecel (sheet_id, data) {
         let mysql = {};
 		let escape_data = [sheet_id, dateFormat(new Date(data.Date), "yyyy-mm-dd"), data.Transaction, data.Num, data.Name];
 		let strQuery = await mysqclass.mysqli(mysql, 'insert_into_expense');
         return await global.mysql.query(strQuery, escape_data)
     }
-    async insert_totalexpense (id, data) {
+    async update_totalexpense (id, data) {
         let mysql = {};
 		let escape_data = [data.Credit, data.Debit, id];
 		let strQuery = await mysqclass.mysqli(mysql, 'update_final_expense');
         return await global.mysql.query(strQuery, escape_data)
     }
     
+    async update_totalsheet (id, data) {
+        let mysql = {};
+		let escape_data = [data.Credit, data.Debit, id];
+		let strQuery = await mysqclass.mysqli(mysql, 'update_final_sheets');
+        return await global.mysql.query(strQuery, escape_data)
+    }
 
-
-    async insert_expensesdetails (id, data) {
+    async insert_expensesdetails (sheet_id, id, data) {
         let mysql = {};
         let type = '';
         let amount = 0;
@@ -482,12 +494,35 @@ class commonModule  {
             type = 'debit';
             amount = data.Debit;
         }
-        let escape_data = [id, data.MemoDescription, data.Account, amount, type];
+        let escape_data = [sheet_id, id, data.MemoDescription, data.Account, amount, type];
 
         let strQuery = await mysqclass.mysqli(mysql, 'insert_into_expensedetails');
         return await global.mysql.query(strQuery, escape_data)
     }
 
+    async getall_activesheets () {
+        let mysql = {};
+		let escape_data = [];
+		let strQuery = await mysqclass.mysqli(mysql, 'get_all_sheets');
+        return await global.mysql.query(strQuery, escape_data)
+    }
+
+
+    async getall_expensesmain (id) {
+        let mysql = {};
+		let escape_data = [id];
+		let strQuery = await mysqclass.mysqli(mysql, 'get_all_expensesmain');
+        return await global.mysql.query(strQuery, escape_data)
+    }
+
+    async getall_insideexpensesmain (id) {
+        let mysql = {};
+		let escape_data = [id];
+		let strQuery = await mysqclass.mysqli(mysql, 'get_all_expensesinside');
+        return await global.mysql.query(strQuery, escape_data)
+    }
+
+    
 }
 
 module.exports = commonModule

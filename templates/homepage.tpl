@@ -35,10 +35,43 @@
 </form>
 
 
+{if $record.length > 0}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Excel File Name</th>
+          <th>Date Added</th>
+          <th>Total Credits</th>
+          <th>Total Debits</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {foreach $record as $key => $val}
+        <tr>
+          <td>{$val.id}</td>
+          <td>{$val.orig_name}</td>
+          <td>{dateTimeConverter($val.date_added)}</td>
+          <td>$ {currencyConverter($val.total_credits)||''}</td>
+          <td>$ {currencyConverter($val.total_debits)||''}</td>
+          <td><a href="/viewexpense/{$val.id}">View</a></td>
+        </tr>
+        {/foreach}
+         </tbody>
+    </table>
+{else /}
+No Excel Sheets Added!
+{/if}
 
 
 
-	  <script src="{$config[externalIMjs]}jqueryNotify.js"></script>
+
+
+
+
+      <script src="{$config[externalIMjs]}jqueryNotify.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript">
     $('#pay_chk').on("submit",function(e){
         e.preventDefault();

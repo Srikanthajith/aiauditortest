@@ -6,23 +6,19 @@ const multerModule = require("../module/multer");
 const multer = new multerModule();
 const XLSX = require('xlsx');
 const asyncnpm = require('async');
+const _ = require('underscore');
 
-app.get(['/'], function (req, res) {
+app.get(['/'], async (req, res) => {
 	var extend = require('util')._extend;
 	var arr_temp = extend({}, $arr);
   	arr_temp.logornot = (typeof (req.session.userid) === 'undefined') ? '' : req.session.userid;
   	arr_temp.emp = (typeof (req.session.is_emp) === 'undefined') ? '' : req.session.is_emp;
 	if (arr_temp.logornot == '') {
-		var nsmarty = require('nsmarty');
-		arr_temp.sliseo_title = 'Home';
-		arr_temp.loged = req.session;
-		arr_temp.seoIM = arr_temp.sliseo_title;
-    	arr_temp.file_revision = global.fileversion.file_revision;
-		nsmarty.clearCache('homepage.tpl');
-		nsmarty.tpl_path = arr_temp.config.path + '/templates/';
-		res.setHeader('Content-Type', 'text/html; charset=UTF-8');
-		stream = nsmarty.assign('homepage.tpl', arr_temp);
-		stream.pipe(res);
+		let [record] = await Promise.all([common.getall_activesheets(req)]);
+		arr_temp.record = record;
+		common.tplFile("homepage.tpl");
+		common.headerSet(1);
+		common.loadTemplateHeader(req, res, arr_temp);
 	} else if (arr_temp.emp == 1) {
 		res.writeHead(302, {
 			'Location': '/admincp'
@@ -40,6 +36,21 @@ app.get(['/'], function (req, res) {
 
 
 
+app.get(['/viewexpense/:action'], async (req, res) => {
+	var extend = require('util')._extend;
+	var arr_temp = extend({}, $arr);
+	let [outerrecords, innerrecords] = await Promise.all([common.getall_expensesmain(req.params.action), common.getall_insideexpensesmain(req.params.action)]);
+	for (const item of outerrecords) {
+		let arraytopushinside = _.filter(innerrecords, function (o) { return o.expense_id == item.id; })
+		item.internalexpenses = arraytopushinside
+	}
+	arr_temp.completerecords = outerrecords;
+	common.tplFile("viewexpenses.tpl");
+	common.headerSet(1);
+	common.loadTemplateHeader(req, res, arr_temp);
+});
+
+
 
 app.post(['/importXLSXfile'], multer.multerSingleUpload('excel_file'), async (req, res) => {
 	let finalresult = {};
@@ -50,12 +61,13 @@ app.post(['/importXLSXfile'], multer.multerSingleUpload('excel_file'), async (re
 		res.end();
 		return false;
 	} else {
+		let [insertSheet] = await Promise.all([common.insert_mainsheet(req.file)]);
 		// let fileext = mime.getExtension(req.file.mimetype)
 		// let csvTrue = 0
 		// csvTrue = fileext == 'csv' ? 1 : 0
 		// req.file.basenam = (typeof (req.file.filename) === 'undefined') ? '' : req.file.filename.substr(0, req.file.filename.lastIndexOf('.'));
 		// finalresult.datumnew = req.file;
-		let sheet_id = 2;
+		let sheet_id = insertSheet.insertId;
 		var inputFile = global.path + 'public/uploads/excelfiles/' + req.file.filename;
 		asyncnpm.waterfall([
 			function (callback) {
@@ -94,14 +106,14 @@ app.post(['/importXLSXfile'], multer.multerSingleUpload('excel_file'), async (re
 						let [insertedData] = await Promise.all([common.insert_dataexecel(sheet_id, data)]);
 						insertID = insertedData.insertId;
 						if(data.Account || data.MemoDescription){
-							await Promise.all([common.insert_expensesdetails(insertID, data)]);
+							await Promise.all([common.insert_expensesdetails(sheet_id, insertID, data)]);
 						}
 						return true;
 					} else {
 						if(data.Account || data.MemoDescription){
-							await Promise.all([common.insert_expensesdetails(insertID, data)]);
+							await Promise.all([common.insert_expensesdetails(sheet_id, insertID, data)]);
 						} else if(data.Credit || data.Debit) {
-							await Promise.all([common.insert_totalexpense(insertID, data)]);
+							await Promise.all([common.update_totalexpense(insertID, data)]);
 						}
 						return true;
 					}
@@ -111,7 +123,7 @@ app.post(['/importXLSXfile'], multer.multerSingleUpload('excel_file'), async (re
 				for (const item of data) {
 					if (item) {
 						if(data.length == dataiterated){
-							console.log('Final Amount', item);
+							await Promise.all([common.update_totalsheet(sheet_id, item)]);
 						} else {
 							await insertallData(item);
 						}
