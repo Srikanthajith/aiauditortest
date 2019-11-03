@@ -22,6 +22,7 @@ module.exports = async (app) => {
 
     app.use(helmet.noCache());
     app.use(compression());
+    console.log('directory', __dirname);
     app.use(express.static(path.join(__dirname, '../public')));
     app.enable('trust proxy');
     csrfProtection = csrf({ cookie: true })
