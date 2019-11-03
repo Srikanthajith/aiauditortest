@@ -463,6 +463,27 @@ class commonModule  {
         return await global.mysql.query(strQuery, escape_data)
     }
 
+    async clear_sheets () {
+        let mysql = {};
+		let escape_data = [];
+		let strQuery = await mysqclass.mysqli(mysql, 'clear_sheets');
+        return await global.mysql.query(strQuery, escape_data)
+    }
+
+    async clear_expenses () {
+        let mysql = {};
+		let escape_data = [];
+		let strQuery = await mysqclass.mysqli(mysql, 'clear_expenses');
+        return await global.mysql.query(strQuery, escape_data)
+    }
+
+    async clear_expenses_details () {
+        let mysql = {};
+		let escape_data = [];
+		let strQuery = await mysqclass.mysqli(mysql, 'clear_expenses_details');
+        return await global.mysql.query(strQuery, escape_data)
+    }
+
     async insert_dataexecel (sheet_id, data) {
         let mysql = {};
 		let escape_data = [sheet_id, dateFormat(new Date(data.Date), "yyyy-mm-dd"), data.Transaction, data.Num, data.Name];

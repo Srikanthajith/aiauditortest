@@ -29,3 +29,8 @@ mysqliq['get_all_sheets'] = 'select id, orig_name, inside_name, date_added, tota
 
 mysqliq['get_all_expensesmain'] = 'select id, sheet_id, date, transaction, num, name, total_credits, total_debits from expenses where sheet_id = ?';
 mysqliq['get_all_expensesinside'] = 'select id, expense_id, description, account, amount, type from expenses_details where sheet_id = ?';
+
+mysqliq['clear_sheets'] = 'TRUNCATE sheets';
+mysqliq['clear_expenses'] = 'TRUNCATE expenses';
+mysqliq['clear_expenses_details'] = 'TRUNCATE expenses_details';
+

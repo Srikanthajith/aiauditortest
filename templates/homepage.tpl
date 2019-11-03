@@ -28,9 +28,12 @@
 				<input name="excel_file" data-parsley-group="block1" required id="csvs" accept=".xlsx, .xls" maxlength="99" type="file" class="form-control">
 			</div>
 		</div>
-		<div class="col-md-12 text-left">
-			<input type="submit" class="btn sitebtn-sec" value="Save" />
-		</div>
+		<div class="col-md-6 text-left">
+            <input type="submit" class="btn sitebtn-sec" value="Save" />
+        </div>
+        <div class="col-md-6 text-right">
+            <button type="button" disabled class="btn sitebtn-sec" onclick="clearallfunction()"> Clear All </button>
+        </div>
 	</div>
 </form>
 
@@ -73,6 +76,49 @@ No Excel Sheets Added!
       <script src="{$config[externalIMjs]}jqueryNotify.js"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript">
+
+    function clearallfunction(){
+        $.ajax({
+            type: "POST",
+            url: "/clearAll",
+            data: {},
+            cache: false,
+            success: function (data) {
+                $.notify({
+                    message: 'All Datas Cleared'
+                },{
+                    type: 'success',
+                    placement: {
+                        from: "top",
+                        align: "right"
+                    }
+                });
+                setInterval(function(){
+                    $.notifyClose();
+				},10000);
+				window.location.reload(true);
+                return false;
+            },
+            error: function(error){
+                $.notify({
+                    message: error.responseText
+                },{
+                    type: 'danger',
+                    placement: {
+                        from: "top",
+                        align: "right"
+                    }
+                });
+                setInterval(function(){
+                    $.notifyClose();
+				},10000);
+				window.location.reload(true);
+                return false;
+            }
+        });
+    }
+
+
     $('#pay_chk').on("submit",function(e){
         e.preventDefault();
         var form = $("#pay_chk")[0];

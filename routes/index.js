@@ -51,8 +51,13 @@ app.get(['/viewexpense/:action'], async (req, res) => {
 });
 
 
+app.post(['/clearAll'], async (req, res) => {
+	await Promise.all([common.clear_sheets(),common.clear_expenses(),common.clear_expenses_details()]);
+	common.jsonResponse(res, 'success', '');
+});
 
 app.post(['/importXLSXfile'], multer.multerSingleUpload('excel_file'), async (req, res) => {
+	req.setTimeout(500000);
 	let finalresult = {};
 	if (req.fileValidationError) {
 		finalresult.csvdata = 'failed';
