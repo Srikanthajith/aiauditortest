@@ -69,6 +69,7 @@ app.post(['/importXLSXfile'], multer.multerSingleUpload('excel_file'), async (re
 		// finalresult.datumnew = req.file;
 		let sheet_id = insertSheet.insertId;
 		var inputFile = global.path + 'public/uploads/excelfiles/' + req.file.filename;
+		console.log('inputFile', inputFile);
 		asyncnpm.waterfall([
 			function (callback) {
 				var headers = {};
