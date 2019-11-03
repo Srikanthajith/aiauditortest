@@ -8,6 +8,17 @@ class multerModule {
         this.storage = '';
     }
 
+    excelFilter (req, file, cb) {
+        // accept csv only
+        var fileext = mime.getExtension(file.mimetype)
+        if (fileext == 'xls' || fileext == 'xlsx') {
+            cb(null, true);
+		} else {
+            req.fileValidationError = "Forbidden extension";
+            return cb(null, false, req.fileValidationError);
+		}
+    };
+
     csvFilter (req, file, cb) {
         // accept csv only
         var fileext = mime.getExtension(file.mimetype)
@@ -48,10 +59,12 @@ class multerModule {
         if(fieldname == 'ig_lotdoc' || fieldname == 'ph_upload' ){
             this.setupfolder('product_csv')
             this.filter = this.csvFilter;
-        }
-        else if(fieldname == 'csvs'){
+        } else if(fieldname == 'csvs'){
             this.setupfolder('temp')
             this.filter = this.csvFilter;
+        } else if(fieldname == 'excel_file'){
+            this.setupfolder('excelfiles')
+            this.filter = this.excelFilter;
         }
         let upload = multer({storage: this.storage , fileFilter: this.filter, errorHandling: 'manual'});
         return upload.single(fieldname)
