@@ -17,7 +17,7 @@ app.get('*',function(req,res){
     common.loadTemplateHeader(req,res,$arr);
 });
 var server = http.createServer(app).listen(port);
-
+server.timeout = 600000;
 console.log('site up and running on port: '+ port);
 //http.globalAgent.maxSockets = 10;
 io = require('socket.io').listen(server);

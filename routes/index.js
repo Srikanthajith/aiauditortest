@@ -57,7 +57,6 @@ app.post(['/clearAll'], async (req, res) => {
 });
 
 app.post(['/importXLSXfile'], multer.multerSingleUpload('excel_file'), async (req, res) => {
-	req.setTimeout(500000);
 	let finalresult = {};
 	if (req.fileValidationError) {
 		finalresult.csvdata = 'failed';
