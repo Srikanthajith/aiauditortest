@@ -1,5 +1,10 @@
 const http = require('http');
-const port = require('config').get('Common').get('port');
+let port = 0;
+if(process.env.PORT){
+    port = process.env.PORT;
+} else {
+    port = require('config').get('Common').get('port');
+}
 
 module.exports = async (app) => {
 
